@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,11 +27,25 @@ namespace Palacinkarnica
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CORS", builder =>
+                {
+                    builder.AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowAnyOrigin();
+                });
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Palacinkarnica", Version = "v1" });
+            });
+
+            services.AddDbContext<PalacinkarnicaContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("PalacinkarnicaCS"));
             });
         }
 
@@ -47,6 +62,8 @@ namespace Palacinkarnica
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("CORS");
 
             app.UseAuthorization();
 
