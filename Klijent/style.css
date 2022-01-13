@@ -1,0 +1,46 @@
+.divZaInput {
+    display: flex;
+    flex-direction: row;
+}
+
+.formaZaDodavanjeLokala {
+    margin: auto;
+    width: 50%;
+    border: 3px solid black;
+    padding: 10px;
+}
+
+.headerDodavanjaLokala, .headerZaOdabirLokala {
+    text-align: center;
+}
+
+.divZaInput {
+    margin: auto;
+    width: 50%;
+    padding: 3px;
+}
+
+.labelaZaInput {
+    width: 80px;
+}
+
+.dodajLokal {
+    margin-left: 250px;
+    width: 20%;
+    padding: 3px;
+}
+
+.divZaCBOdabiraLokala {
+    display: flex;
+    flex-direction: column;
+}
+
+.formaZaOdabirLokala {
+    border: 3px solid black;
+    margin: 15px;
+}
+
+.divZaOdabirLokala {
+    margin: 3px;
+    margin-left: 20px;
+}
