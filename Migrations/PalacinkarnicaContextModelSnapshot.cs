@@ -65,6 +65,9 @@ namespace Palacinkarnica.Migrations
                         .HasColumnType("int")
                         .HasColumnName("BrojStola");
 
+                    b.Property<int?>("LokalZaNarudzbinuID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Napomena")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
@@ -78,6 +81,8 @@ namespace Palacinkarnica.Migrations
                         .HasColumnName("VrstaPalacinke");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("LokalZaNarudzbinuID");
 
                     b.HasIndex("SpremalacID");
 
@@ -138,9 +143,15 @@ namespace Palacinkarnica.Migrations
 
             modelBuilder.Entity("Narudzbina", b =>
                 {
+                    b.HasOne("Lokal", "LokalZaNarudzbinu")
+                        .WithMany()
+                        .HasForeignKey("LokalZaNarudzbinuID");
+
                     b.HasOne("Radnik", "Spremalac")
                         .WithMany("Narudzbine")
                         .HasForeignKey("SpremalacID");
+
+                    b.Navigation("LokalZaNarudzbinu");
 
                     b.Navigation("Spremalac");
                 });

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Palacinkarnica.Migrations
 {
     [DbContext(typeof(PalacinkarnicaContext))]
-    [Migration("20220109195440_V1")]
+    [Migration("20220115193053_V1")]
     partial class V1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,6 +67,9 @@ namespace Palacinkarnica.Migrations
                         .HasColumnType("int")
                         .HasColumnName("BrojStola");
 
+                    b.Property<int?>("LokalZaNarudzbinuID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Napomena")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
@@ -80,6 +83,8 @@ namespace Palacinkarnica.Migrations
                         .HasColumnName("VrstaPalacinke");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("LokalZaNarudzbinuID");
 
                     b.HasIndex("SpremalacID");
 
@@ -140,9 +145,15 @@ namespace Palacinkarnica.Migrations
 
             modelBuilder.Entity("Narudzbina", b =>
                 {
+                    b.HasOne("Lokal", "LokalZaNarudzbinu")
+                        .WithMany()
+                        .HasForeignKey("LokalZaNarudzbinuID");
+
                     b.HasOne("Radnik", "Spremalac")
                         .WithMany("Narudzbine")
                         .HasForeignKey("SpremalacID");
+
+                    b.Navigation("LokalZaNarudzbinu");
 
                     b.Navigation("Spremalac");
                 });

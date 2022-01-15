@@ -18,6 +18,20 @@ public class NarudzbinaController : ControllerBase
     }
 
     [HttpGet]
+    [Route("VratiSveNarudzbine")]
+    public async Task<ActionResult> VratiSveNarudzbine()
+    {
+        try
+        {
+            return Ok(await Context.Narudzbine.Select(p => new { p.LokalZaNarudzbinu, p.VrstaPalacinke, p.BrojStola, p.Napomena, p.Spremalac, p.ID }).ToListAsync());
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet]
     [Route("VratiSveNarudzbine/{lokalID}")]
     public async Task<JsonResult> VratiSveNarudzbine(int lokalID)
     {

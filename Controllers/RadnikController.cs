@@ -75,4 +75,12 @@ public class RadnikController : ControllerBase
         }
         
     }
+
+    [HttpPost]
+    [Route("DodajRadnika")]
+    public async Task DodajRadnika([FromBody] Radnik radnik)
+    {
+        Context.Radnici.Add(radnik);
+        await Context.SaveChangesAsync();    
+    }
 }

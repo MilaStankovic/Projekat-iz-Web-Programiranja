@@ -58,11 +58,18 @@ namespace Palacinkarnica.Migrations
                     VrstaPalacinke = table.Column<int>(type: "int", nullable: false),
                     BrojStola = table.Column<int>(type: "int", nullable: false),
                     Napomena = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    SpremalacID = table.Column<int>(type: "int", nullable: true)
+                    SpremalacID = table.Column<int>(type: "int", nullable: true),
+                    LokalZaNarudzbinuID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Narudzbine", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Narudzbine_Lokali_LokalZaNarudzbinuID",
+                        column: x => x.LokalZaNarudzbinuID,
+                        principalTable: "Lokali",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Narudzbine_Radnici_SpremalacID",
                         column: x => x.SpremalacID,
@@ -70,6 +77,11 @@ namespace Palacinkarnica.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Narudzbine_LokalZaNarudzbinuID",
+                table: "Narudzbine",
+                column: "LokalZaNarudzbinuID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Narudzbine_SpremalacID",

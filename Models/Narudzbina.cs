@@ -26,4 +26,7 @@ public class Narudzbina {
 
         [JsonIgnore]
         public Radnik Spremalac { get; set; }
+
+        [JsonIgnore]
+        public Lokal LokalZaNarudzbinu { get; set; }
 }
