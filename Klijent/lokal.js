@@ -2,7 +2,8 @@ import { Narudzbina } from "./narudzbina.js";
 import { Radnik } from "./radnik.js";
 
 export class Lokal {
-    constructor(naziv, grad, adresa, brojZaposlenih) {
+    constructor(id, naziv, grad, adresa, brojZaposlenih) {
+        this.id = id;
         this.naziv = naziv;
         this.grad = grad;
         this.adresa = adresa;
@@ -42,6 +43,21 @@ export class Lokal {
         tmp.className = "formaZaDodavanjeRadnika";
         pom.appendChild(tmp);
         this.crtajFormuZaDodavanjeRadnika(tmp);
+
+        tmp = document.createElement("div");
+        tmp.className = "formaZaBrisanjeRadnika";
+        pom.appendChild(tmp);
+        this.crtajFormuZaBrisanjeRadnika(tmp);
+    }
+
+    crtajFormuZaBrisanjeRadnika(host) {
+        host.innerHTML = "";
+
+        let r = new Radnik();
+        r.brisanjeRadnika(host);
+
+        let ponovoIscrtaj = this.container.querySelector(".formaZaOdabirLokala");
+        this.crtajFormuZaOdabirLokala(ponovoIscrtaj);
     }
 
     crtajFormuZaDodavanjeRadnika(host) {
@@ -90,7 +106,7 @@ export class Lokal {
             this.listaLokala.forEach(p => {
                 op = document.createElement("option");
                 op.innerHTML = p.naziv;
-                op.value = p.naziv;
+                op.value = p.id;
                 tmp.appendChild(op);
             });
 
@@ -100,6 +116,12 @@ export class Lokal {
             pom.innerHTML = "Dodaj";
             pom.onclick = (ev) => {
                 this.dodajRadnika();
+
+                let ponovoIscrtaj = this.container.querySelector(".formaZaOdabirLokala");
+                this.crtajFormuZaOdabirLokala(ponovoIscrtaj);
+
+                ponovoIscrtaj = this.container.querySelector(".formaZaBrisanjeRadnika");
+                this.crtajFormuZaBrisanjeRadnika(ponovoIscrtaj);
             }
         }, 1000);
     }
@@ -153,29 +175,22 @@ export class Lokal {
 
         let optionEl = this.container.querySelector("select");
         var odabranLokal = optionEl.options[optionEl.selectedIndex].value;
-        //console.log(odabranLokal);
 
-        //console.log(ime + " " + prezime + " " + mejl + " " + datumRodjenja + " " + plata + " " + datumZaposlenja + " " + brSlobodnihDana);
-        //console.log();
+        // console.log(odabranLokal); 
+        // console.log(ime + " " + prezime + " " + mejl + " " + datumRodjenja + " " + plata + " " + datumZaposlenja + " " + brSlobodnihDana);
 
         // Napravi proveru za duzinu
 
-        // let r = new Radnik();
-        // fetch("https://localhost:5001/Radnik/DodajRadnika/", {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     },
-        //     body: JSON.stringify({ "Naziv": noviLokal.naziv, "Grad": noviLokal.grad,
-        //             "Adresa": noviLokal.adresa, "BrojZaposlenih": noviLokal.brojZaposlenih})
-        // }).then(p => {
-        //     if (p.ok) {
-        //         this.dodavanjeLokala(noviLokal);
-        //         let ponovoIscrtaj = this.container.querySelector(".formaZaOdabirLokala");
-        //         ponovoIscrtaj.innerHTML="";
-        //         this.crtajFormuZaOdabirLokala(ponovoIscrtaj);
-        //     }
-        // });
+        let r = new Radnik(ime, prezime, mejl, datumRodjenja, plata, datumZaposlenja, brSlobodnihDana, odabranLokal);
+        r.dodajNovogRadnika(r);
+
+        let ponovoIscrtaj = this.container.querySelector(".formaZaOdabirLokala");
+        ponovoIscrtaj.innerHTML = "";
+        this.crtajFormuZaOdabirLokala(ponovoIscrtaj);
+
+        ponovoIscrtaj = this.container.querySelector(".formaZaDodavanjeRadnika");
+        ponovoIscrtaj.innerHTML = "";
+        this.crtajFormuZaDodavanjeRadnika(ponovoIscrtaj);
     }
 
     dodajLokal() {
@@ -193,7 +208,7 @@ export class Lokal {
             alert("Adresa je obavezno polje.");
         }
 
-        let noviLokal = new Lokal(this.naziv, this.grad, this.adresa, this.brojZaposlenih);
+        let noviLokal = new Lokal(null, this.naziv, this.grad, this.adresa, this.brojZaposlenih);
 
         fetch("https://localhost:5001/Lokal/DodajLokal/", {
             method: "POST",
@@ -206,7 +221,7 @@ export class Lokal {
             if (p.ok) {
                 this.dodavanjeLokala(noviLokal);
                 let ponovoIscrtaj = this.container.querySelector(".formaZaOdabirLokala");
-                ponovoIscrtaj.innerHTML="";
+                ponovoIscrtaj.innerHTML = "";
                 this.crtajFormuZaOdabirLokala(ponovoIscrtaj);
             }
         });
@@ -225,7 +240,7 @@ export class Lokal {
                 this.listaLokala = [];
                 this.listaRadnika = [];
                 data.forEach(lokal => {
-                    this.listaLokala.push(new Lokal(lokal.naziv, lokal.grad, lokal.adresa, lokal.brojZaposlenih));
+                    this.listaLokala.push(new Lokal(lokal.id, lokal.naziv, lokal.grad, lokal.adresa, lokal.brojZaposlenih));
                     //lokal.radnici.forEach(radnik => {
                     //    this.listaRadnika.push(radnik);    
                     //});
@@ -234,6 +249,8 @@ export class Lokal {
         });
 
         setTimeout(() => {
+            host.innerHTML = "";
+
             let pom = document.createElement("h2");
             host.appendChild(pom);
             pom.className = "headerZaOdabirLokala";
@@ -259,6 +276,7 @@ export class Lokal {
 
                 tmp = document.createElement("input");
                 tmp.type = "checkbox";
+                tmp.className = "cbZaLokale";
                 tmp.value = element.naziv;
                 div.appendChild(tmp);
             });
@@ -272,12 +290,12 @@ export class Lokal {
             div.className = "prikaziLokale";
             div.innerHTML = "Prikazi";
             div.onclick = (ev) => {
-                this.prikaziLokale(tmp);
+                this.prikaziLokale(tmp, m);
             }
         }, 1000);
     }
 
-    prikaziLokale(host) {
+    prikaziLokale(host, parentHosta) {
         if(!host)
             throw new Error("Host ne postoji.");
 
@@ -322,23 +340,14 @@ export class Lokal {
                     tmp1.className = "tmp2";
                     pom.appendChild(tmp1);
 
-                    // console.log(trLokal.naziv);
-                    // console.log(this.listaRadnika);
-
-                    // this.listaRadnika.forEach(radnik => {
-                    //     if(radnik.lokal === trLokal) {
-                    //         console.log(radnik.lokal.naziv);
-                    //         tmp2 = document.createElement("div");
-                    //         tmp1.appendChild(tmp2);
-                    //         tmp2.innerHTML = "Radnik - " + radnik.ime + " " + radnik.prezime;
-                    //     }
-                    // });
-
-                    console.log(trLokal.naziv);
-
-                    //let radnik = new Radnik();
                     let narudzbina = new Narudzbina();
                     narudzbina.crtajNarudzbinu(tmp1, trLokal.naziv);
+
+                    tmp1 = document.createElement("div");
+                    pom.appendChild(tmp1);
+                    tmp1.className = "tmp3";
+
+                    narudzbina.dodajNarudzbinu(tmp1, trLokal.id, host, parentHosta);
                 }
             });
         });

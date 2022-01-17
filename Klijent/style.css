@@ -73,3 +73,11 @@
     margin: auto;
     width: 30%;
 }
+
+body {
+    background-color: rgb(211, 161, 188);
+}
+
+.formaZaBrisanjeRadnika {
+    border: 3px solid black;
+}

@@ -71,4 +71,13 @@ public class NarudzbinaController : ControllerBase
         Context.Remove(narudzbina);
         await Context.SaveChangesAsync();
     }
+
+    [HttpPost]
+    [Route("DodajNarudzbinuLokalu/{lokalID}")]
+    public async Task DodajNarudzbinuLokalu(int lokalID, [FromBody] Narudzbina narudzbina)
+    {
+        narudzbina.LokalZaNarudzbinu = Context.Lokali.Find(lokalID);
+        Context.Narudzbine.Add(narudzbina);
+        await Context.SaveChangesAsync();   
+    }
 }

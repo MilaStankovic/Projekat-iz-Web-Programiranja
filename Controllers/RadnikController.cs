@@ -77,9 +77,10 @@ public class RadnikController : ControllerBase
     }
 
     [HttpPost]
-    [Route("DodajRadnika")]
-    public async Task DodajRadnika([FromBody] Radnik radnik)
+    [Route("DodajRadnika/{lokalID}")]
+    public async Task DodajRadnika(int lokalID, [FromBody] Radnik radnik)
     {
+        radnik.Lokal = Context.Lokali.Find(lokalID);
         Context.Radnici.Add(radnik);
         await Context.SaveChangesAsync();    
     }
