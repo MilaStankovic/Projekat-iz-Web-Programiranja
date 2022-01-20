@@ -70,6 +70,55 @@ export class Radnik {
     }
 
     dodajNovogRadnika(radnik) {
+        if(radnik.ime.length === 0) 
+        {
+            alert("Ime je obavezno polje.");
+        } 
+        else if (radnik.ime.length > 60) 
+        {
+            alert("Ime moze imati maksimalno 60 karaktera.");
+        } 
+        else if(radnik.prezime.length === 0) 
+        {
+            alert("Prezime je obavezno polje.");
+        } 
+        else if (radnik.prezime.length > 60) 
+        {
+            alert("Prezime moze imati maksimalno 60 karaktera.");
+        } 
+        else if(radnik.mejl.length === 0) 
+        {
+            alert("Mejl je obavezno polje.");
+        } 
+        else if (radnik.mejl.length > 60) 
+        {
+            alert("Mejl moze imati maksimalno 60 karaktera.");
+        } 
+        else if(radnik.datumRodjenja.length === 0) 
+        {
+            alert("Datum rodjenja je obavezno polje.");
+        }
+        else if(radnik.plata.length === 0) 
+        {
+            alert("Plata je obavezno polje.");
+        } 
+        else if (radnik.plata > 100000) 
+        {
+            alert("Plata ne moze da bude veca od 100000 dinara.");
+        }
+        else if (radnik.plata < 30000) 
+        {
+            alert("Plata ne moze da bude manja od 30000 dinara.");
+        }
+        else if(radnik.datumZaposlenja.length === 0) 
+        {
+            alert("Datum zaposlenja je obavezno polje.");
+        }
+        else if(radnik.brojSlobodnihDana.length === 0)
+        {
+            radnik.brojSlobodnihDana = 0;
+        }
+        
         fetch("https://localhost:5001/Radnik/DodajRadnika/" + radnik.lokal , {
             method: "POST",
             headers: {
@@ -81,6 +130,7 @@ export class Radnik {
         }).then(p => {
             if (p.ok) {
                 this.listaRadnika.push(radnik);
+                alert("Uspesno ste dodali radnika.");
             }
         });
     }
@@ -98,9 +148,13 @@ export class Radnik {
         });
 
         setTimeout(() => {
+            let div = document.createElement("div");
+            div.className = "divZaDodeljivanjeNarudzbine";
+            host2.appendChild(div);
+
             let host = document.createElement("select");
             host.className = "selectZaDodeluNarudzbineRadniku";
-            host2.appendChild(host);
+            div.appendChild(host);
 
             let op;
             this.listaRadnika.forEach(p => {
@@ -111,7 +165,7 @@ export class Radnik {
             });
 
             op = document.createElement("button");
-            host2.appendChild(op);
+            div.appendChild(op);
             op.className = "dodeliNarudzbinu";
             op.innerHTML = "Dodeli";
             op.onclick = (ev) => {

@@ -8,7 +8,6 @@ export class Lokal {
         this.grad = grad;
         this.adresa = adresa;
         this.brojZaposlenih = brojZaposlenih;
-        //this.listaRadnika = [];
 
         this.listaLokala = [];
 
@@ -110,18 +109,22 @@ export class Lokal {
                 tmp.appendChild(op);
             });
 
+            op = document.createElement("div");
+            op.className = "divZaDugmice";
+            host.appendChild(op);
+
             pom = document.createElement("button");
-            host.appendChild(pom);
+            op.appendChild(pom);
             pom.className = "dodajRadnika";
             pom.innerHTML = "Dodaj";
             pom.onclick = (ev) => {
                 this.dodajRadnika();
 
-                let ponovoIscrtaj = this.container.querySelector(".formaZaOdabirLokala");
-                this.crtajFormuZaOdabirLokala(ponovoIscrtaj);
+                //let ponovoIscrtaj = this.container.querySelector(".formaZaOdabirLokala");
+                //this.crtajFormuZaOdabirLokala(ponovoIscrtaj);
 
-                ponovoIscrtaj = this.container.querySelector(".formaZaBrisanjeRadnika");
-                this.crtajFormuZaBrisanjeRadnika(ponovoIscrtaj);
+                //ponovoIscrtaj = this.container.querySelector(".formaZaBrisanjeRadnika");
+                //this.crtajFormuZaBrisanjeRadnika(ponovoIscrtaj);
             }
         }, 1000);
     }
@@ -135,8 +138,8 @@ export class Lokal {
         pom.className = "headerDodavanjaLokala";
         pom.innerHTML = "Dodavanje novog lokala";
 
-        let nizInputa = ["Naziv", "Grad", "Adresa", "Zaposleni"];
-        let tipoviInputa = ["text", "text", "text", "number"];
+        let nizInputa = ["Naziv", "Grad", "Adresa"];
+        let tipoviInputa = ["text", "text", "text"];
 
         let tmp;
         nizInputa.forEach((naziv, index) => {
@@ -155,8 +158,12 @@ export class Lokal {
             tmp.className = "inputPolje" + index;
         });
 
+        tmp = document.createElement("div");
+        tmp.className = "divZaDugmice";
+        host.appendChild(tmp);
+
         pom = document.createElement("button");
-        host.appendChild(pom);
+        tmp.appendChild(pom);
         pom.className = "dodajLokal";
         pom.innerHTML = "Dodaj";
         pom.onclick = (ev) => {
@@ -176,11 +183,6 @@ export class Lokal {
         let optionEl = this.container.querySelector("select");
         var odabranLokal = optionEl.options[optionEl.selectedIndex].value;
 
-        // console.log(odabranLokal); 
-        // console.log(ime + " " + prezime + " " + mejl + " " + datumRodjenja + " " + plata + " " + datumZaposlenja + " " + brSlobodnihDana);
-
-        // Napravi proveru za duzinu
-
         let r = new Radnik(ime, prezime, mejl, datumRodjenja, plata, datumZaposlenja, brSlobodnihDana, odabranLokal);
         r.dodajNovogRadnika(r);
 
@@ -197,18 +199,33 @@ export class Lokal {
         this.naziv = this.container.querySelector(".inputPolje0").value;
         this.grad = this.container.querySelector(".inputPolje1").value;
         this.adresa = this.container.querySelector(".inputPolje2").value;
-        this.brojZaposlenih = this.container.querySelector(".inputPolje3").value;
 
-        if(this.naziv.length == null) {
+        if(this.naziv.length === 0) 
+        {
             alert("Naziv je obavezno polje.");
-        } else if (this.grad.length == null) {
+        } 
+        else if (this.naziv.length > 60) 
+        {
+            alert("Naziv moze imati maksimalno 60 karaktera.");
+        } 
+        else if (this.grad.length === 0) 
+        {
             alert("Grad je obavezno polje.");
         }
-        else if (this.adresa.length == null) {
+        else if (this.grad.length > 60) 
+        {
+            alert("Grad moze imati maksimalno 60 karaktera.");
+        } 
+        else if (this.adresa.length === 0) 
+        {
             alert("Adresa je obavezno polje.");
         }
+        else if (this.adresa.length > 255) 
+        {
+            alert("Adresa moze imati maksimalno 255 karaktera.");
+        }
 
-        let noviLokal = new Lokal(null, this.naziv, this.grad, this.adresa, this.brojZaposlenih);
+        let noviLokal = new Lokal(null, this.naziv, this.grad, this.adresa, 0);
 
         fetch("https://localhost:5001/Lokal/DodajLokal/", {
             method: "POST",
@@ -223,6 +240,7 @@ export class Lokal {
                 let ponovoIscrtaj = this.container.querySelector(".formaZaOdabirLokala");
                 ponovoIscrtaj.innerHTML = "";
                 this.crtajFormuZaOdabirLokala(ponovoIscrtaj);
+                alert("Uspesno ste dodali lokal.");
             }
         });
     }
@@ -241,9 +259,6 @@ export class Lokal {
                 this.listaRadnika = [];
                 data.forEach(lokal => {
                     this.listaLokala.push(new Lokal(lokal.id, lokal.naziv, lokal.grad, lokal.adresa, lokal.brojZaposlenih));
-                    //lokal.radnici.forEach(radnik => {
-                    //    this.listaRadnika.push(radnik);    
-                    //});
                 });
             });
         });
@@ -285,17 +300,21 @@ export class Lokal {
             m.appendChild(tmp);
             tmp.className = "desniDiv";
 
+            labela = document.createElement("div");
+            labela.className = "divZaDugmice";
+            pom.appendChild(labela);
+
             div = document.createElement("button");
-            pom.appendChild(div);
+            labela.appendChild(div);
             div.className = "prikaziLokale";
             div.innerHTML = "Prikazi";
             div.onclick = (ev) => {
-                this.prikaziLokale(tmp, m);
+                this.prikaziLokale(tmp);
             }
         }, 1000);
     }
 
-    prikaziLokale(host, parentHosta) {
+    prikaziLokale(host) {
         if(!host)
             throw new Error("Host ne postoji.");
 
@@ -305,16 +324,15 @@ export class Lokal {
 
         if(lokali.length == 0){
             alert("Izaberite lokal!");
-            return;
         }
 
         let pom, tmp1, tmp2;
         lokali.forEach(lokal => {
             this.listaLokala.forEach(trLokal => {
-                if(trLokal.naziv == lokal.value) {
+                if(trLokal.naziv == lokal.value) {     
                     pom = document.createElement("div");
                     host.appendChild(pom);
-                    pom.className = "divZaPrikazPodatakaOLokalu";
+                    pom.className = "divZaTmpove";
                     
                     tmp1 = document.createElement("div");
                     tmp1.className = "tmp1";
@@ -323,18 +341,17 @@ export class Lokal {
                     tmp2 = document.createElement("div");
                     tmp1.appendChild(tmp2);
                     tmp2.innerHTML = "Naziv - " + trLokal.naziv;
+                    tmp2.className = "infoLokala";
 
                     tmp2 = document.createElement("div");
                     tmp1.appendChild(tmp2);
                     tmp2.innerHTML = "Grad - " + trLokal.grad;
+                    tmp2.className = "infoLokala";
 
                     tmp2 = document.createElement("div");
                     tmp1.appendChild(tmp2);
                     tmp2.innerHTML = "Adresa - " + trLokal.adresa;
-
-                    tmp2 = document.createElement("div");
-                    tmp1.appendChild(tmp2);
-                    tmp2.innerHTML = "Broj zaposlenih - " + trLokal.brojZaposlenih;
+                    tmp2.className = "infoLokala";
 
                     tmp1 = document.createElement("div");
                     tmp1.className = "tmp2";
@@ -347,7 +364,7 @@ export class Lokal {
                     pom.appendChild(tmp1);
                     tmp1.className = "tmp3";
 
-                    narudzbina.dodajNarudzbinu(tmp1, trLokal.id, host, parentHosta);
+                    narudzbina.dodajNarudzbinu(tmp1, trLokal.id);
                 }
             });
         });

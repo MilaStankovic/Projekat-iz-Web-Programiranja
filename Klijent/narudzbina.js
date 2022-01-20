@@ -39,30 +39,38 @@ export class Narudzbina {
 
                         tmp = document.createElement("div");
                         pom.appendChild(tmp);
+                        tmp.className = "infoONarudzbini";
                         if(p.vrstaPalacinke === 0) {
-                            pom.innerHTML = "Vrsta palacinke - Slatka";
+                            tmp.innerHTML = "Vrsta palacinke - Slatka";
                         }
                         else {
-                            pom.innerHTML = "Vrsta palacinke - Slana";
+                            tmp.innerHTML = "Vrsta palacinke - Slana";
                         }
 
                         tmp = document.createElement("div");
                         pom.appendChild(tmp);
                         tmp.innerHTML = "Broj stola - " + p.brojStola;
+                        tmp.className = "infoONarudzbini";
 
                         tmp = document.createElement("div");
                         pom.appendChild(tmp);
                         tmp.innerHTML = "Napomena - " + p.napomena;
+                        tmp.className = "infoONarudzbini";
 
                         tmp = document.createElement("div");
                         pom.appendChild(tmp);
                         tmp.innerHTML = "Spremalac - Nedodeljena jos uvek.";
+                        tmp.className = "infoONarudzbini";
 
                         let r = new Radnik();
                         r.dodajRadnikeUOdabir(p.lokalZaNarudzbinu.id, p.id, pom, host, nazivLokala);
 
+                        let divZaDugmice = document.createElement("div");
+                        divZaDugmice.className = "divZaDugmice";
+                        pom.appendChild(divZaDugmice);
+
                         tmp = document.createElement("button");
-                        pom.appendChild(tmp);
+                        divZaDugmice.appendChild(tmp);
                         tmp.className = "obrisiNarudzbinu";
                         tmp.innerHTML = "Obrisi narudzbinu";
                         tmp.onclick = (ev) => {
@@ -78,27 +86,35 @@ export class Narudzbina {
 
                         tmp = document.createElement("div");
                         pom.appendChild(tmp);
+                        tmp.className = "infoONarudzbini";
                         if(p.vrstaPalacinke === 0) {
-                            pom.innerHTML = "Vrsta palacinke - Slatka";
+                            tmp.innerHTML = "Vrsta palacinke - Slatka";
                         }
                         else {
-                            pom.innerHTML = "Vrsta palacinke - Slana";
+                            tmp.innerHTML = "Vrsta palacinke - Slana";
                         }
 
                         tmp = document.createElement("div");
                         pom.appendChild(tmp);
                         tmp.innerHTML = "Broj stola - " + p.brojStola;
+                        tmp.className = "infoONarudzbini";
 
                         tmp = document.createElement("div");
                         pom.appendChild(tmp);
                         tmp.innerHTML = "Napomena - " + p.napomena;
+                        tmp.className = "infoONarudzbini";
 
                         tmp = document.createElement("div");
                         pom.appendChild(tmp);
                         tmp.innerHTML = "Spremalac - " + p.spremalac.ime + " " + p.spremalac.prezime;
+                        tmp.className = "infoONarudzbini";
+
+                        let divZaDugmice = document.createElement("div");
+                        divZaDugmice.className = "divZaDugmice";
+                        pom.appendChild(divZaDugmice);
 
                         tmp = document.createElement("button");
-                        pom.appendChild(tmp);
+                        divZaDugmice.appendChild(tmp);
                         tmp.className = "obrisiNarudzbinu";
                         tmp.innerHTML = "Obrisi narudzbinu";
                         tmp.onclick = (ev) => {
@@ -110,7 +126,7 @@ export class Narudzbina {
         }, 1000);
     }
 
-    dodajNarudzbinu(gdeDaCrta, lokalID, staDaOsvezi, parentHosta) {
+    dodajNarudzbinu(gdeDaCrta, lokalID) {
         if(!gdeDaCrta)
             throw new Error("Host ne postoji.");
 
@@ -126,6 +142,7 @@ export class Narudzbina {
         pom = document.createElement("label");
         tmp.appendChild(pom);
         pom.innerHTML = "Vrsta palacinke";
+        pom.className = "labelaDodavanjaNoveNarudzbine";
 
         pom = document.createElement("select");
         pom.className = "selectZaVrstuPalacinke";
@@ -148,6 +165,7 @@ export class Narudzbina {
         pom = document.createElement("label");
         tmp.appendChild(pom);
         pom.innerHTML = "Vas broj stola";
+        pom.className = "labelaDodavanjaNoveNarudzbine";
 
         pom = document.createElement("input");
         pom.type = "number";
@@ -161,32 +179,33 @@ export class Narudzbina {
         pom = document.createElement("label");
         tmp.appendChild(pom);
         pom.innerHTML = "Napomena";
+        pom.className = "labelaDodavanjaNoveNarudzbine";
 
         pom = document.createElement("input");
         tmp.appendChild(pom);
         pom.className = "inputNapomene";
 
+        tmp = document.createElement("div");
+        gdeDaCrta.appendChild(tmp);
+        tmp.className = "divZaDugmice";
+
         pom = document.createElement("button");
-        gdeDaCrta.appendChild(pom);
+        tmp.appendChild(pom);
         pom.className = "dodajNarudzbinu";
         pom.innerHTML = "Dodaj narudzbinu";
         pom.onclick = (ev) => {
-            this.dodajNarudzbinuULokal(gdeDaCrta, lokalID, staDaOsvezi, parentHosta);
+            this.dodajNarudzbinuULokal(gdeDaCrta, lokalID);
         }
     }
 
-    dodajNarudzbinuULokal(gdeDaCrta, lokalID, staDaOsvezi, parentHosta) {
+    dodajNarudzbinuULokal(gdeDaCrta, lokalID) {
         let optionEl = gdeDaCrta.querySelector(".selectZaVrstuPalacinke");
         var odabranaPalacinka = optionEl.options[optionEl.selectedIndex].value;
 
         let brStola = gdeDaCrta.querySelector(".inputBrojaStola").value;
-        let napomena = gdeDaCrta.querySelector(".inputNapomene").value;
-
-        //console.log(odabranaPalacinka + " " + brStola + " " + napomena);
+        let napomena = gdeDaCrta.querySelector(".inputNapomene").value;        
 
         let novaNarudzbina = new Narudzbina(odabranaPalacinka, brStola, napomena);
-
-        console.log(parseInt(novaNarudzbina.vrstaPalacinke) + " " + parseInt(novaNarudzbina.brStola) + " " + novaNarudzbina.napomena);
 
         fetch("https://localhost:5001/Narudzbina/DodajNarudzbinuLokalu/" + lokalID , {
             method: "POST",
@@ -197,10 +216,10 @@ export class Narudzbina {
             "napomena": novaNarudzbina.napomena })
         }).then(p => {
             if (p.ok) {
-                //console.log("Proslo");
                 this.listaNarudzbina.push(novaNarudzbina);
                 let l = new Lokal();
-                l.crtajFormuZaOdabirLokala(parentHosta);
+                document.body.innerHTML = "";
+                l.crtaj(document.body);
             }
         });
     }
