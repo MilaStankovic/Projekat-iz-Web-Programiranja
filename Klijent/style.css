@@ -50,6 +50,7 @@
 .divZaTmpove {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .velikiDiv {

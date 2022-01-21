@@ -249,7 +249,7 @@ export class Lokal {
         this.listaLokala.push(noviLokal);
     }
 
-    crtajFormuZaOdabirLokala(host) {
+    crtajFormuZaOdabirLokala(host) { //da osvezi dole opcije za prikaz lokala
         if(!host)
             throw new Error("Host ne postoji.");
 
